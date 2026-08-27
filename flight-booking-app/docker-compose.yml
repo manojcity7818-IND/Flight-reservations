@@ -5,7 +5,7 @@ services:
     environment:
       PORT: 8000
     ports:
-      - "8001:8000"
+      - "9101:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
       interval: 15s
@@ -16,7 +16,7 @@ services:
     build: ./services/booking-service
     container_name: flight-booking-service
     ports:
-      - "8002:8000"
+      - "9102:8000"
 
   flight-payment-service:
     build: ./services/payment-service
@@ -24,19 +24,19 @@ services:
     environment:
       PAYMENT_DEFAULT_OUTCOME: SUCCESS
     ports:
-      - "8003:8000"
+      - "9103:8000"
 
   flight-notification-service:
     build: ./services/notification-service
     container_name: flight-notification-service
     ports:
-      - "8004:8000"
+      - "9104:8000"
 
   flight-user-service:
     build: ./services/user-service
     container_name: flight-user-service
     ports:
-      - "8005:8000"
+      - "9105:8000"
 
   flight-api-gateway:
     build: ./services/api-gateway
@@ -48,7 +48,7 @@ services:
       NOTIFICATION_SERVICE_URL: http://flight-notification-service:8000
       USER_SERVICE_URL: http://flight-user-service:8000
     ports:
-      - "8080:8000"
+      - "9180:8000"
     depends_on:
       - flight-search-service
       - flight-booking-service
@@ -60,6 +60,6 @@ services:
     build: ./web
     container_name: flight-frontend
     ports:
-      - "3000:80"
+      - "3100:80"
     depends_on:
       - flight-api-gateway
