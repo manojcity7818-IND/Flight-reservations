@@ -111,10 +111,12 @@ Payment is simulated. Choose the demo instrument ending `4242` for success or `0
 
 ## CI / PR pipelines
 
-- `azure-pipelines-ci.yml` — main-branch CI: tests, frontend build, Docker image builds (no push, no deploy)
-- `azure-pipelines-pr.yml` — pull request validation: lint, tests, build, Dockerfile validation
+Pipeline YAML lives at the **repository root** (Azure DevOps default). Do not add a second copy under this folder.
 
-Point Azure DevOps at these files. Use pipeline variables/service connections later for ACR; do not hardcode secrets.
+- [`azure-pipelines-ci.yml`](../azure-pipelines-ci.yml) — main-branch CI: tests, frontend build, Docker image builds (no push, no deploy)
+- [`azure-pipelines-pr.yml`](../azure-pipelines-pr.yml) — pull request validation: lint, tests, build, Dockerfile validation
+
+Point Azure DevOps at those root files. Use pipeline variables/service connections later for ACR; do not hardcode secrets.
 
 ## What is intentionally not included
 
