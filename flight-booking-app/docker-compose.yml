@@ -1,0 +1,65 @@
+services:
+  flight-search-service:
+    build: ./services/flight-search-service
+    container_name: flight-search-service
+    environment:
+      PORT: 8000
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  booking-service:
+    build: ./services/booking-service
+    container_name: booking-service
+    ports:
+      - "8002:8000"
+
+  payment-service:
+    build: ./services/payment-service
+    container_name: payment-service
+    environment:
+      PAYMENT_DEFAULT_OUTCOME: SUCCESS
+    ports:
+      - "8003:8000"
+
+  notification-service:
+    build: ./services/notification-service
+    container_name: notification-service
+    ports:
+      - "8004:8000"
+
+  user-service:
+    build: ./services/user-service
+    container_name: user-service
+    ports:
+      - "8005:8000"
+
+  api-gateway:
+    build: ./services/api-gateway
+    container_name: api-gateway
+    environment:
+      FLIGHT_SEARCH_URL: http://flight-search-service:8000
+      BOOKING_SERVICE_URL: http://booking-service:8000
+      PAYMENT_SERVICE_URL: http://payment-service:8000
+      NOTIFICATION_SERVICE_URL: http://notification-service:8000
+      USER_SERVICE_URL: http://user-service:8000
+    ports:
+      - "8080:8000"
+    depends_on:
+      - flight-search-service
+      - booking-service
+      - payment-service
+      - notification-service
+      - user-service
+
+  frontend:
+    build: ./web
+    container_name: flight-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
