@@ -12,54 +12,54 @@ services:
       timeout: 5s
       retries: 5
 
-  booking-service:
+  flight-booking-service:
     build: ./services/booking-service
-    container_name: booking-service
+    container_name: flight-booking-service
     ports:
       - "8002:8000"
 
-  payment-service:
+  flight-payment-service:
     build: ./services/payment-service
-    container_name: payment-service
+    container_name: flight-payment-service
     environment:
       PAYMENT_DEFAULT_OUTCOME: SUCCESS
     ports:
       - "8003:8000"
 
-  notification-service:
+  flight-notification-service:
     build: ./services/notification-service
-    container_name: notification-service
+    container_name: flight-notification-service
     ports:
       - "8004:8000"
 
-  user-service:
+  flight-user-service:
     build: ./services/user-service
-    container_name: user-service
+    container_name: flight-user-service
     ports:
       - "8005:8000"
 
-  api-gateway:
+  flight-api-gateway:
     build: ./services/api-gateway
-    container_name: api-gateway
+    container_name: flight-api-gateway
     environment:
       FLIGHT_SEARCH_URL: http://flight-search-service:8000
-      BOOKING_SERVICE_URL: http://booking-service:8000
-      PAYMENT_SERVICE_URL: http://payment-service:8000
-      NOTIFICATION_SERVICE_URL: http://notification-service:8000
-      USER_SERVICE_URL: http://user-service:8000
+      BOOKING_SERVICE_URL: http://flight-booking-service:8000
+      PAYMENT_SERVICE_URL: http://flight-payment-service:8000
+      NOTIFICATION_SERVICE_URL: http://flight-notification-service:8000
+      USER_SERVICE_URL: http://flight-user-service:8000
     ports:
       - "8080:8000"
     depends_on:
       - flight-search-service
-      - booking-service
-      - payment-service
-      - notification-service
-      - user-service
+      - flight-booking-service
+      - flight-payment-service
+      - flight-notification-service
+      - flight-user-service
 
-  frontend:
+  flight-frontend:
     build: ./web
     container_name: flight-frontend
     ports:
       - "3000:80"
     depends_on:
-      - api-gateway
+      - flight-api-gateway

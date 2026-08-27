@@ -53,7 +53,9 @@ docker compose up --build
 docker compose down
 ```
 
-Services talk to each other with Compose **service names** (never `localhost` inside containers). The gateway uses `http://flight-search-service:8000`, etc.
+Services talk to each other with Compose **service names** (never `localhost` inside containers). Names are prefixed with `flight-` so they do not clash with a Hotel app using `notification-service`, `booking-service`, or `payment-service`.
+
+The gateway uses `http://flight-search-service:8000`, `http://flight-booking-service:8000`, `http://flight-notification-service:8000`, and so on.
 
 ## Run without Docker
 

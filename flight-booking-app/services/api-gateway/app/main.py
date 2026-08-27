@@ -16,10 +16,10 @@ app.add_middleware(
 )
 
 FLIGHT_SEARCH_URL = os.getenv("FLIGHT_SEARCH_URL", "http://flight-search-service:8000")
-BOOKING_SERVICE_URL = os.getenv("BOOKING_SERVICE_URL", "http://booking-service:8000")
-PAYMENT_SERVICE_URL = os.getenv("PAYMENT_SERVICE_URL", "http://payment-service:8000")
-NOTIFICATION_SERVICE_URL = os.getenv("NOTIFICATION_SERVICE_URL", "http://notification-service:8000")
-USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://user-service:8000")
+BOOKING_SERVICE_URL = os.getenv("BOOKING_SERVICE_URL", "http://flight-booking-service:8000")
+PAYMENT_SERVICE_URL = os.getenv("PAYMENT_SERVICE_URL", "http://flight-payment-service:8000")
+NOTIFICATION_SERVICE_URL = os.getenv("NOTIFICATION_SERVICE_URL", "http://flight-notification-service:8000")
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://flight-user-service:8000")
 
 PREFIX_MAP = (
     ("/api/flights", FLIGHT_SEARCH_URL),
