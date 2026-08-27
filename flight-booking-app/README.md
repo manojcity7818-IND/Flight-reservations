@@ -33,17 +33,19 @@ This repository did not contain a runnable Hotel Reservation codebase (only a sh
 
 ## Local URLs
 
+These are **host** ports used by Docker Compose. They are in the `91xx` / `3100` range so they do not collide with a Hotel stack that often binds `8001–8005`, `8080`, and `3000`. Inside the Compose network, services still listen on port `8000`.
+
 | Surface | URL |
 | --- | --- |
-| Frontend | http://localhost:3000 |
-| API gateway | http://localhost:8080 |
-| Flight search | http://localhost:8001 |
-| Booking | http://localhost:8002 |
-| Payment | http://localhost:8003 |
-| Notification | http://localhost:8004 |
-| User | http://localhost:8005 |
+| Frontend | http://localhost:3100 |
+| API gateway | http://localhost:9180 |
+| Flight search | http://localhost:9101 |
+| Booking | http://localhost:9102 |
+| Payment | http://localhost:9103 |
+| Notification | http://localhost:9104 |
+| User | http://localhost:9105 |
 
-Health: `GET http://localhost:8001/health` (and the same path on each service).
+Health: `GET http://localhost:9101/health` (and the same path on each mapped service port).
 
 ## Docker Compose
 
@@ -103,8 +105,8 @@ See `.env.example`. No real secrets, Azure credentials, or payment keys are requ
 ## Sample API
 
 ```bash
-curl "http://localhost:8080/api/flights?from=DEL&to=BOM&departureDate=2026-09-10"
-curl -X POST http://localhost:8080/api/payments \
+curl "http://localhost:9180/api/flights?from=DEL&to=BOM&departureDate=2026-09-10"
+curl -X POST http://localhost:9180/api/payments \
   -H 'Content-Type: application/json' \
   -d '{"bookingId":"BK12345","amount":6450,"currency":"INR","simulateOutcome":"SUCCESS"}'
 ```
