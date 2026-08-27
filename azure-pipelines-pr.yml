@@ -1,0 +1,83 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+      - master
+      - "*"
+  paths:
+    include:
+      - flight-booking-app/**
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  pythonVersion: "3.12"
+  nodeVersion: "22.x"
+  workingDir: flight-booking-app
+
+jobs:
+  - job: PullRequestValidation
+    displayName: PR validation
+    steps:
+      - checkout: self
+
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "$(pythonVersion)"
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "$(nodeVersion)"
+
+      - script: |
+          python -m pip install --upgrade pip
+          pip install -r services/flight-search-service/requirements.txt
+          pip install -r services/booking-service/requirements.txt
+          pip install -r services/payment-service/requirements.txt
+          pip install -r services/notification-service/requirements.txt
+          pip install -r services/user-service/requirements.txt
+          pip install -r services/api-gateway/requirements.txt
+          pip install pytest ruff
+        workingDirectory: $(workingDir)
+        displayName: Install dependencies
+
+      - script: ruff check services tests web/tests
+        workingDirectory: $(workingDir)
+        displayName: Python lint
+
+      - script: |
+          set -e
+          for service in flight-search-service booking-service payment-service notification-service user-service api-gateway; do
+            (cd services/$service && python -m pytest)
+          done
+          python -m pytest tests/integration
+          (cd web && python -m pytest)
+        workingDirectory: $(workingDir)
+        displayName: Unit and integration tests
+
+      - script: |
+          npm install
+          npm run lint
+          npm test
+          npm run build
+        workingDirectory: $(workingDir)/web
+        displayName: Frontend lint, test, and build
+
+      - script: |
+          set -e
+          for df in services/flight-search-service/Dockerfile services/booking-service/Dockerfile services/payment-service/Dockerfile services/notification-service/Dockerfile services/user-service/Dockerfile services/api-gateway/Dockerfile web/Dockerfile; do
+            test -f "$df"
+            grep -q "FROM" "$df"
+          done
+          docker build -t flight-search-service:pr ./services/flight-search-service
+          docker build -t booking-service:pr ./services/booking-service
+          docker build -t payment-service:pr ./services/payment-service
+          docker build -t notification-service:pr ./services/notification-service
+          docker build -t user-service:pr ./services/user-service
+          docker build -t api-gateway:pr ./services/api-gateway
+          docker build -t flight-frontend:pr ./web
+        workingDirectory: $(workingDir)
+        displayName: Validate Dockerfiles and build images
